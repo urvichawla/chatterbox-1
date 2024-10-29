@@ -109,7 +109,7 @@
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        const socket = io('<%= socketUrl %>', {
+        const socket = io('<%= SOCKET_URL %>', {
             transports: ["websocket", "polling"],
             secure: true
         });
