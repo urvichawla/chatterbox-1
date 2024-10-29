@@ -350,7 +350,8 @@ const server = http.createServer(app);
 const io = require("socket.io")(server, {
     cors: {
       origin: "*", // Replace '*' with your Render app URL once you have it
-      methods: ["GET", "POST"]
+      methods: ["GET", "POST"],
+      credentials: true
     }
   });
   
@@ -378,7 +379,7 @@ cloudinary.config({
     cloud_name: process.env.CLOUD_NAME, 
     api_key: process.env.CLOUD_API_KEY, 
     api_secret: process.env.CLOUD_API_SECRET,
-    socket_url:process.env.SOCKET_URL,
+   
 
 
 });
@@ -426,7 +427,7 @@ app.post('/room', (req, res) => {
 app.get('/room/:id', (req, res) => {
     const roomId = req.params.id;
     if (rooms[roomId]) {
-        res.render('room', { roomId });
+        res.render('room', { roomId, socketUrl: process.env.SOCKET_URL  });
     } else {
         res.status(404).send("Room does not exist.");
     }
