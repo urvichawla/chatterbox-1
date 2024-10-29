@@ -377,7 +377,10 @@ app.use(cors({
 cloudinary.config({ 
     cloud_name: process.env.CLOUD_NAME, 
     api_key: process.env.CLOUD_API_KEY, 
-    api_secret: process.env.CLOUD_API_SECRET 
+    api_secret: process.env.CLOUD_API_SECRET,
+    socket_url:process.env.SOCKET_URL,
+
+
 });
 
 // Multer storage setup for Cloudinary
@@ -393,7 +396,7 @@ const upload = multer({ storage: storage });
 
 // Route to render the main page with a form to create a unique room
 app.get('/', (req, res) => {
-    res.render('index');
+    res.render('index', { socketUrl: process.env.SOCKET_URL });
 });
 
 // Room creation route

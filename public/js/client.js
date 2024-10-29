@@ -151,7 +151,7 @@
 //     window.location.href = '/';
 // });
 // Initialize socket connection
-const socket = io('https://chatterbox-2-lvq3.onrender.com', {
+const socket = io('https://chatterbox1-lvq3.onrender.com', {
     transports: ["websocket", "polling"],
     secure: true
   });
