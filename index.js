@@ -347,7 +347,13 @@ const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server);
+const io = require("socket.io")(server, {
+    cors: {
+      origin: "*", // Replace '*' with your Render app URL once you have it
+      methods: ["GET", "POST"]
+    }
+  });
+  
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
@@ -358,6 +364,14 @@ const rooms = {}; // Track room states
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+const cors = require('cors');
+
+app.use(cors({
+  origin: "*", // Ideally, specify your frontend URL instead of '*'
+  methods: ["GET", "POST"],
+  allowedHeaders: ["Content-Type"],
+}));
+
 
 // Cloudinary configuration
 cloudinary.config({ 

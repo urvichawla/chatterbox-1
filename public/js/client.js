@@ -151,7 +151,11 @@
 //     window.location.href = '/';
 // });
 // Initialize socket connection
-const socket = io('http://localhost:8001');
+const socket = io('https://chatterbox.onrender.com', {
+    transports: ["websocket", "polling"],
+    secure: true
+  });
+  
 
 // DOM Elements
 const form = document.getElementById('send-container');
