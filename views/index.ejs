@@ -1,0 +1,108 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatterbox</title>
+    <link rel="stylesheet" href="/css/index.css">
+   
+</head>
+<body>
+    
+
+<div class="content">
+    <div class="waviy">
+        <span style="--i:1">C</span>
+        <span style="--i:2">H</span>
+        <span style="--i:3">A</span>
+        <span style="--i:4">T</span>
+        <span style="--i:5">T</span>
+        <span style="--i:6">E</span>
+        <span style="--i:7">R</span>
+        <span style="--i:8">B</span>
+        <span style="--i:9">o</span>
+        <span style="--i:10">X</span>
+     
+       </div>
+
+       <div class="text-container">
+        <p class="text">
+          <span class="word">Welcome</span>
+          <span class="word">to</span>
+          <span class="word">Chatterbox!</span>
+          <span class="word">Connect</span>
+          <span class="word">and</span>
+          <span class="word">chat</span>
+          <span class="word">with</span>
+          <span class="word">your</span>
+          <span class="word">friends</span>
+          <span class="word">effortlessly.</span>
+        </p>
+      </div>
+    
+    <form id="create-chat-form" method="POST" action="/create-room">
+        <button type="submit" class="btn-create-chat">Create Chat Room</button>
+    </form>
+
+    <p>Or join an existing room:</p>
+    <form id="join-chat-form" method="POST" action="/room">
+        <input type="text" name="roomId" placeholder="Enter Room ID" required>
+        <button type="submit" class="btn-join-chat">Join Room</button>
+    </form>
+</div>
+
+</body>
+</html> -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatterbox</title>
+    <link rel="stylesheet" href="/css/index.css">
+</head>
+<body>
+    <div class="content">
+        <div class="waviy">
+            <span style="--i:1">C</span>
+            <span style="--i:2">H</span>
+            <span style="--i:3">A</span>
+            <span style="--i:4">T</span>
+            <span style="--i:5">T</span>
+            <span style="--i:6">E</span>
+            <span style="--i:7">R</span>
+            <span style="--i:8">B</span>
+            <span style="--i:9">O</span>
+            <span style="--i:10">X</span>
+        </div>
+
+        <div class="text-container">
+            <p class="text">
+                <span class="word">Welcome</span>
+                <span class="word">to</span>
+                <span class="word">Chatterbox!</span>
+                <span class="word">Connect</span>
+                <span class="word">and</span>
+                <span class="word">chat</span>
+                <span class="word">with</span>
+                <span class="word">your</span>
+                <span class="word">friends</span>
+                <span class="word">effortlessly.</span>
+            </p>
+        </div>
+
+        <!-- Container for forms -->
+        <div class="form-container">
+            <form id="create-chat-form" method="POST" action="/create-room">
+                <button type="submit" class="btn-create-chat">Create Chat Room</button>
+            </form>
+
+            <p class="join-room-title">Or join an existing room:</p>
+            <form id="join-chat-form" method="POST" action="/room">
+                <input type="text" name="roomId" placeholder="Enter Room ID" required>
+                <button type="submit" class="btn-join-chat">Join Room</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
