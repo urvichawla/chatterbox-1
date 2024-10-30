@@ -4,12 +4,7 @@
 //     reconnectionAttempts: 5,
 //     reconnectionDelay: 1000
 // });
-const socket = io("http://localhost:8001", {
-    transports: ['websocket', 'polling'],
-    reconnection: true,
-    reconnectionAttempts: 5,
-    reconnectionDelay: 1000
-  });
+
 
 // DOM Elements
 const form = document.getElementById('send-container');
