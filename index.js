@@ -338,7 +338,7 @@ require('dotenv').config();
 
 const express = require('express');
 const http = require('http');
-const socketIo = require('socket.io');
+
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 const multer = require('multer');
@@ -347,12 +347,13 @@ const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
 const app = express();
 const server = http.createServer(app);
-const io = require("socket.io")(server, {
+const io = require("socket.io")
+ (server, {
     cors: {
       origin: "*", // Replace '*' with your Render app URL once you have it
-      methods: ["GET", "POST"],
+     methods: ["GET", "POST"],
       credentials: true
-    }
+     }
   });
   
 
@@ -427,7 +428,7 @@ app.post('/room', (req, res) => {
 app.get('/room/:id', (req, res) => {
     const roomId = req.params.id;
     if (rooms[roomId]) {
-        res.render('room', { roomId, socketUrl: process.env.SOCKET_URL  });
+        res.render('room', { roomId,socketUrl: process.env.SOCKET_URL });
     } else {
         res.status(404).send("Room does not exist.");
     }
@@ -504,6 +505,19 @@ io.on('connection', (socket) => {
             handleRoomClosure(socket, roomId);
         }
     });
+    socket.on('end-sessions', (roomId) => {
+        console.log('Received end-sessions event for room:', roomId);
+        if (rooms[roomId] && rooms[roomId].creator === socket.id) {
+            handleRoomClosure(roomId, "The creator has ended the session.");
+        }
+    });
+    
+    // socket.on('end-session', (roomId) => {
+    //     if (rooms[roomId] && socket.id === rooms[roomId].creator) {
+    //         handleRoomClosure(socket, roomId, "The creator has ended the session.");
+    //     }
+    // });
+    
 
     socket.on('send', (data) => {
         const sender = users[socket.id];
@@ -519,7 +533,7 @@ io.on('connection', (socket) => {
     socket.on('start-timer', ({ roomId }) => {
         if (rooms[roomId] && socket.id === rooms[roomId].creator && !rooms[roomId].isTimerStarted) {
             rooms[roomId].isTimerStarted = true;
-            rooms[roomId].timeLeft = 30;
+            rooms[roomId].timeLeft = 120;
 
             io.to(roomId).emit('timer-update', {
                 timeLeft: rooms[roomId].timeLeft,
@@ -579,6 +593,15 @@ function handleRoomClosure(roomId, reason) {
 
         // Delete the room
         delete rooms[roomId];
+        const socketsInRoom = io.sockets.adapter.rooms.get(roomId);
+        if (socketsInRoom) {
+            for (const socketId of socketsInRoom) {
+                const socket = io.sockets.sockets.get(socketId);
+                if (socket) {
+                    socket.leave(roomId);
+                }
+            }
+        }
     }
 }
 

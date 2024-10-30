@@ -389,3 +389,36 @@ body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   font-size: 0.9rem;
 }
+/* Add these styles to your CSS */
+
+.message code {
+    font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+}
+
+.message pre {
+    margin: 8px 0;
+    padding: 12px;
+    border-radius: 4px;
+    background-color: #282c34;
+    overflow-x: auto;
+    color: #d6d8dd;
+}
+
+.message .inline-code {
+    background-color: #f0f0f0;
+    padding: 2px 4px;
+    border-radius: 3px;
+    color: #e83e8c;
+}
+
+/* Dark theme overrides */
+.message.dark-theme pre {
+    background-color: #1e1e1e;
+    color: #d6d8dd;
+}
+
+.message.dark-theme .inline-code {
+    background-color: #2d2d2d;
+    color: #d7ba7d;
+}
+`

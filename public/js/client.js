@@ -1,10 +1,15 @@
-const socket = io(window.location.origin, {
+// const socket = io(window.location.origin, {
+//     transports: ['websocket', 'polling'],
+//     reconnection: true,
+//     reconnectionAttempts: 5,
+//     reconnectionDelay: 1000
+// });
+const socket = io("http://localhost:8001", {
     transports: ['websocket', 'polling'],
     reconnection: true,
     reconnectionAttempts: 5,
     reconnectionDelay: 1000
-});
-
+  });
 
 // DOM Elements
 const form = document.getElementById('send-container');
@@ -12,6 +17,8 @@ const messageinp = document.getElementById('messageinp');
 const messageContainer = document.querySelector("#message-container");
 const timerDisplay = document.getElementById('timer-display');
 const startTimerBtn = document.getElementById('start-timer');
+ const endsession = document.getElementById('end-sessions');
+
 const fileUploadForm = document.getElementById('file-upload-form');
 const fileList = document.getElementById('file-list');
 
@@ -33,7 +40,12 @@ socket.on('set-as-creator', (creator) => {
     isCreator = creator;
     if (!creator) {
         startTimerBtn.style.display = 'none';
+        endsession.style.display = 'none'; 
+       
     } else {
+        endsession.style.display = 'inline-block'; // Show the button
+        endsession.disabled = false; 
+        
         document.getElementById('file-upload-container').style.display = 'block';
         
         // Add beforeunload event listener for creator
@@ -52,15 +64,320 @@ socket.on('set-as-creator', (creator) => {
 });
 
 // Message handling
+// const append = (message, position) => {
+//     const messageEl = document.createElement('div');
+//     messageEl.classList.add('message', position);
+  
+//     if (message.includes('```')) {
+//         // Split message into code and non-code parts
+//         const parts = message.split(/```(\w+)?\n?|\n?```/);
+//         parts.forEach((part, index) => {
+//             if (index % 2 === 0) {
+//                 // Non-code part
+//                 if (part.trim()) {
+//                     const textNode = document.createElement('div');
+//                     textNode.textContent = part;
+//                     messageEl.appendChild(textNode);
+//                 }
+//             } else {
+//                 // Code part
+//                 const codeBlock = document.createElement('pre');
+//                 const codeEl = document.createElement('code');
+//                 // If language is specified, add class for syntax highlighting
+//                 if (parts[index - 1] && parts[index - 1].trim()) {
+//                     codeEl.className = `language-${parts[index - 1].trim()}`;
+//                 }
+//                 codeEl.textContent = part;
+//                 codeBlock.appendChild(codeEl);
+//                 messageEl.appendChild(codeBlock);
+//                 // Apply syntax highlighting
+//                 hljs.highlightElement(codeEl);
+//             }
+//         });
+//     } else if (message.includes('`')) {
+//         // Handle inline code
+//         const parts = message.split(/`([^`]+)`/);
+//         parts.forEach((part, index) => {
+//             if (index % 2 === 0) {
+//                 // Non-code part
+//                 if (part.trim()) {
+//                     const textNode = document.createElement('div');
+//                     textNode.textContent = part;
+//                     messageEl.appendChild(textNode);
+//                 }
+//             } else {
+//                 // Inline code part
+//                 const inlineCode = document.createElement('code');
+//                 inlineCode.className = 'inline-code';
+//                 inlineCode.textContent = part;
+//                 messageEl.appendChild(inlineCode);
+//             }
+//         });
+//     } else{
+//         messageEl.innerText = message;
+
+//     }
+   
+//     messageContainer.append(messageEl);
+//     messageContainer.scrollTop = messageContainer.scrollHeight;
+//     if (position === 'left') {
+//         audio.play();
+//     }
+// // };
+// const append = (message, position) => {
+//     const messageEl = document.createElement('div');
+//     messageEl.classList.add('message', position);
+  
+//     if (message.includes('```')) {
+//         // Split message into code and non-code parts
+//         const parts = message.split(/```(\w+)?\n?|\n?```/);
+//         parts.forEach((part, index) => {
+//             if (index % 2 === 0) {
+//                 // Non-code part (regular text)
+//                 if (part.trim()) {
+//                     const textNode = document.createElement('div');
+//                     textNode.textContent = part;
+//                     messageEl.appendChild(textNode);
+//                 }
+//             } else {
+//                 // Code part
+//                 const codeBlock = document.createElement('pre');
+//                 const codeEl = document.createElement('code');
+                
+//                 // Get the language specified after the opening ```
+//                 const language = parts[index - 1]?.trim().toLowerCase();
+                
+//                 if (language) {
+//                     // Only add the language class if it's a valid language in highlight.js
+//                     if (hljs.getLanguage(language)) {
+//                         codeEl.className = `language-${language}`;
+//                     }
+//                 }
+                
+//                 codeEl.textContent = part;
+//                 codeBlock.appendChild(codeEl);
+//                 messageEl.appendChild(codeBlock);
+                
+//                 // Apply syntax highlighting
+//                 hljs.highlightElement(codeEl);
+//             }
+//         });
+//     } else if (message.includes('`')) {
+//         // Handle inline code
+//         const parts = message.split(/`([^`]+)`/);
+//         parts.forEach((part, index) => {
+//             if (index % 2 === 0) {
+//                 // Non-code part
+//                 if (part.trim()) {
+//                     const textNode = document.createElement('div');
+//                     textNode.textContent = part;
+//                     messageEl.appendChild(textNode);
+//                 }
+//             } else {
+//                 // Inline code part
+//                 const inlineCode = document.createElement('code');
+//                 inlineCode.className = 'inline-code';
+//                 inlineCode.textContent = part;
+//                 messageEl.appendChild(inlineCode);
+//             }
+//         });
+//     } else {
+//         messageEl.innerText = message;
+//     }
+   
+//     messageContainer.append(messageEl);
+//     messageContainer.scrollTop = messageContainer.scrollHeight;
+//     if (position === 'left') {
+//         audio.play();
+//     }
+// };
+// const append = (message, position) => {
+//     const messageEl = document.createElement('div');
+//     messageEl.classList.add('message', position);
+
+//     // Extract the user prefix if it exists (e.g., "Creator: " or "You: ")
+//     let content = message;
+//     const prefixMatch = message.match(/^(Creator|You): /);
+//     const prefix = prefixMatch ? prefixMatch[0] : '';
+//     if (prefix) {
+//         content = message.slice(prefix.length);
+//     }
+
+//     // Function to detect programming language based on content
+//     const detectLanguage = (code) => {
+//         // Common patterns for different languages
+//         const patterns = {
+//             cpp: /#include|std::|iostream|int main/,
+//             python: /^(def |print|import |class |if __|from )/,
+//             javascript: /^(function|const|let|var|=>)/,
+//             html: /^<!DOCTYPE|<html|<div|<p|<script/,
+//             css: /^(\.|#|body|@media|@import)/
+//         };
+
+//         for (const [lang, pattern] of Object.entries(patterns)) {
+//             if (pattern.test(code.trim())) {
+//                 return lang;
+//             }
+//         }
+//         return '';
+//     };
+//     content = content.replace(/\\n/g, '\n');
+
+//     // Handle explicitly marked code blocks with ```
+//     if (content.includes('```')) {
+//         const parts = content.split(/```(\w+)?\n?|\n?```/);
+//         if (prefix) {
+//             messageEl.appendChild(document.createTextNode(prefix));
+//         }
+//         parts.forEach((part, index) => {
+//             if (index % 2 === 0) {
+//                 if (part.trim()) {
+//                     const textNode = document.createElement('div');
+//                     textNode.textContent = part;
+//                     messageEl.appendChild(textNode);
+//                 }
+//             } else {
+//                 const codeBlock = document.createElement('pre');
+//                 const codeEl = document.createElement('code');
+//                 const language = parts[index - 1]?.trim().toLowerCase() || detectLanguage(part);
+//                 if (language && hljs.getLanguage(language)) {
+//                     codeEl.className = `language-${language}`;
+//                 }
+//                 codeEl.textContent = part;
+//                 codeBlock.appendChild(codeEl);
+//                 messageEl.appendChild(codeBlock);
+//                 hljs.highlightElement(codeEl);
+//             }
+//         });
+//     } 
+//     // Auto-detect and format code that isn't wrapped in backticks
+//     else if (content.includes('#include') || content.includes('int main') || 
+//              content.includes('std::') || content.includes('cout')) {
+//         if (prefix) {
+//             messageEl.appendChild(document.createTextNode(prefix));
+//         }
+//         const codeBlock = document.createElement('pre');
+//         const codeEl = document.createElement('code');
+//         codeEl.className = 'language-cpp';
+//         codeEl.textContent = content;
+//         codeBlock.appendChild(codeEl);
+//         messageEl.appendChild(codeBlock);
+//         hljs.highlightElement(codeEl);
+//     }
+//     // Handle inline code
+//     else if (content.includes('`')) {
+//         if (prefix) {
+//             messageEl.appendChild(document.createTextNode(prefix));
+//         }
+//         const parts = content.split(/`([^`]+)`/);
+//         parts.forEach((part, index) => {
+//             if (index % 2 === 0) {
+//                 if (part.trim()) {
+//                     const textNode = document.createElement('div');
+//                     textNode.textContent = part;
+//                     messageEl.appendChild(textNode);
+//                 }
+//             } else {
+//                 const inlineCode = document.createElement('code');
+//                 inlineCode.className = 'inline-code';
+//                 inlineCode.textContent = part;
+//                 messageEl.appendChild(inlineCode);
+//             }
+//         });
+//     }
+//     // Regular text
+//     else {
+//         messageEl.innerText = message;
+//     }
+
+//     messageContainer.append(messageEl);
+//     messageContainer.scrollTop = messageContainer.scrollHeight;
+//     if (position === 'left') {
+//         audio.play();
+//     }
+// };
 const append = (message, position) => {
     const messageEl = document.createElement('div');
-    messageEl.innerText = message;
     messageEl.classList.add('message', position);
+
+    // Extract user prefix
+    let content = message;
+    const prefixMatch = message.match(/^(Creator|You): /);
+    const prefix = prefixMatch ? prefixMatch[0] : '';
+    if (prefix) content = message.slice(prefix.length);
+
+    // Language detection function
+    const detectLanguage = (code) => {
+        const patterns = {
+            cpp: /#include|std::|iostream|int main/,
+            python: /^(def |print|import |class |if __|from )/,
+            javascript: /^(function|const|let|var|=>|console\.|return|new|for|while|if|else|document\.|async|await|try|catch|switch|case|throw|class)/,
+            html: /^<!DOCTYPE|<html|<div|<p|<script/,
+            css: /^(\.|#|body|@media|@import)/
+        };
+        for (const [lang, pattern] of Object.entries(patterns)) {
+            if (pattern.test(code.trim())) return lang;
+        }
+        return '';
+    };
+
+    // Create code block utility
+    const createCodeBlock = (content, language) => {
+        const codeBlock = document.createElement('pre');
+        const codeEl = document.createElement('code');
+        codeEl.className = `language-${language}`;
+        codeEl.textContent = content;
+        codeBlock.appendChild(codeEl);
+        hljs.highlightElement(codeEl);
+        return codeBlock;
+    };
+
+    content = content.replace(/\\n/g, '\n');
+
+    // Handle code blocks with backticks
+    if (content.includes('```')) {
+        const parts = content.split(/```(\w+)?\n?|\n?```/);
+        if (prefix) messageEl.appendChild(document.createTextNode(prefix));
+        parts.forEach((part, index) => {
+            if (index % 2 === 0 && part.trim()) {
+                const textNode = document.createElement('div');
+                textNode.textContent = part;
+                messageEl.appendChild(textNode);
+            } else {
+                const language = detectLanguage(part);
+                messageEl.appendChild(createCodeBlock(part, language));
+            }
+        });
+    }
+    // Auto-detect and format code without backticks
+    else if (detectLanguage(content)) {
+        if (prefix) messageEl.appendChild(document.createTextNode(prefix));
+        const language = detectLanguage(content);
+        messageEl.appendChild(createCodeBlock(content, language));
+    }
+    // Inline code or regular text
+    else if (content.includes('`')) {
+        if (prefix) messageEl.appendChild(document.createTextNode(prefix));
+        const parts = content.split(/`([^`]+)`/);
+        parts.forEach((part, index) => {
+            if (index % 2 === 0 && part.trim()) {
+                const textNode = document.createElement('div');
+                textNode.textContent = part;
+                messageEl.appendChild(textNode);
+            } else {
+                const inlineCode = document.createElement('code');
+                inlineCode.className = 'inline-code';
+                inlineCode.textContent = part;
+                messageEl.appendChild(inlineCode);
+            }
+        });
+    } else {
+        messageEl.innerText = message;
+    }
+
     messageContainer.append(messageEl);
     messageContainer.scrollTop = messageContainer.scrollHeight;
-    if (position === 'left') {
-        audio.play();
-    }
+    if (position === 'left') audio.play();
 };
 
 // Handle message form submission
@@ -143,6 +460,17 @@ startTimerBtn.addEventListener('click', () => {
         startTimerBtn.disabled = true;
     }
 });
+endsession.addEventListener('click',()=>{
+    console.log('End session clicked, roomId:', roomId);
+    if(isCreator){
+        socket.emit('end-sessions',roomId);
+        endsession.disabled = true; // Di
+       // Send just the roomId, not an object
+         
+    }
+    
+})
+
 
 socket.on('timer-update', (data) => {
     isTimerStarted = data.isStarted;
@@ -150,9 +478,16 @@ socket.on('timer-update', (data) => {
     startTimerBtn.disabled = isTimerStarted;
 });
 
-socket.on('session-ended', (reason) => {
+
+
+ socket.on('session-ended', (reason) => {
     alert(reason || "Chat session has ended!");
-    window.location.href = '/';
+    if (form) form.disabled = true;
+    if (messageinp) messageinp.disabled = true;
+    if (startTimerBtn) startTimerBtn.disabled = true;
+    if (fileUploadForm) fileUploadForm.disabled = true;
+    if (endsession) endsession.disabled = true;
+   window.location.href = '/';
 });
 
 // Handle user join/leave events
@@ -171,11 +506,14 @@ socket.on('creator-leaving', () => {
     if (messageinp) messageinp.disabled = true;
     if (startTimerBtn) startTimerBtn.disabled = true;
     if (fileUploadForm) fileUploadForm.disabled = true;
+    if(endsession) endsession.disabled=true;
+    
     
     setTimeout(() => {
         window.location.href = '/';
     }, 3000); // Give users 3 seconds to read the message
 });
+
 
 socket.on('room-not-found', () => {
     alert('This room does not exist!');

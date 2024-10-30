@@ -58,8 +58,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat Room</title>
     <link rel="stylesheet" href="/css/style.css">
+
+
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
 
     
 </head>
@@ -89,10 +93,12 @@
                 <form id="send-container">
                     <input type="text" id="messageinp" class="form-control" placeholder="Enter message" required>
                     <button class="btn" type="submit">Send</button>
-                    <button id="start-timer" >Start Chat Session (30min)</button>
+                    <button id="start-timer" >Start Chat Session (2mins)</button>
+                    
                 </form>
                 <span>
-                <div id="timer-display" >00:30</div>
+                    <button id="end-sessions" onclick="endSession()">End Chat Session</button></span>
+               <span> <div id="timer-display" >02:00</div>
                 </span>
         
         </div>
@@ -105,11 +111,20 @@
                     <button type="submit" class="btn">Upload</button>
                 </div>
             </form>
+            </div>
 
 
     <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io('<%= socketUrl %>', {
+            transports: ["websocket", "polling"],
+            secure: true
+        });
+        </script>
 
     
     <script src="/js/client.js"></script>
+   
+
 </body>
 </html>
