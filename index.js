@@ -350,7 +350,7 @@ const server = http.createServer(app);
 const io = require("socket.io")
  (server, {
     cors: {
-      origin: "*", // Replace '*' with your Render app URL once you have it
+      origin: "https://chatterbox-1-1.onrender.com", // Replace '*' with your Render app URL once you have it
      methods: ["GET", "POST"],
       credentials: true
      }
@@ -367,15 +367,17 @@ const rooms = {}; // Track room states
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 const cors = require('cors');
+const socketUrl = "https://chatterbox-1-2.onrender.com";
 
 app.use(cors({
-  origin: "*", // Ideally, specify your frontend URL instead of '*'
+  origin: "https://chatterbox-1-2.onrender.com", // Ideally, specify your frontend URL instead of '*'
   methods: ["GET", "POST"],
   allowedHeaders: ["Content-Type"],
 }));
 
 
 // Cloudinary configuration
+
 cloudinary.config({ 
     cloud_name: process.env.CLOUD_NAME, 
     api_key: process.env.CLOUD_API_KEY, 
@@ -398,7 +400,7 @@ const upload = multer({ storage: storage });
 
 // Route to render the main page with a form to create a unique room
 app.get('/', (req, res) => {
-    res.render('index', { socketUrl: process.env.SOCKET_URL });
+    res.render('index', { socketUrl});
 });
 
 // Room creation route
@@ -428,7 +430,7 @@ app.post('/room', (req, res) => {
 app.get('/room/:id', (req, res) => {
     const roomId = req.params.id;
     if (rooms[roomId]) {
-        res.render('room', { roomId,socketUrl: process.env.SOCKET_URL });
+        res.render('room', { roomId,socketUrl});
     } else {
         res.status(404).send("Room does not exist.");
     }
